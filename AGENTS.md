@@ -37,9 +37,19 @@
 
 ### Commit / Push 规则(严格遵守)
 
-- **严禁在 `main` 分支上提交(最高优先级,无任何例外)。** 提交前必须先确认当前分支(如 `git rev-parse --abbrev-ref HEAD`)。只要当前分支是 `main`(或待提交的变更是在 `main` 分支上产生的),就**拒绝执行 commit**,停止操作,并原样提示我:
+- **严禁在 `main` 分支上提交(最高优先级,只有下面一条例外)。** 提交前必须先确认当前分支(如 `git rev-parse --abbrev-ref HEAD`)。只要当前分支是 `main`(或待提交的变更是在 `main` 分支上产生的),就**拒绝执行 commit**,停止操作,并原样提示我:
   > 不要在 main 分支直接提交,请切换到 develop 分支进行提交,再合并回 main 分支。
   不得替你切换到 `develop` 分支,不得先提交再"稍后合并",也不得以任何理由(紧急、改动很小、只是文档等)绕过这条规则;等我切换到 `develop` 后再继续。
+  - **唯一例外:刚 `git init`、还没有任何提交的空仓库。** 这种仓库连 `develop` 分支都还不存在,首次提交只能落在默认分支 `main` 上,此时**允许**直接提交,无需提示我切换分支。
+    - 判断方式(四条同时满足才算):
+      ```bash
+      git rev-parse --git-dir >/dev/null 2>&1 && \
+      [ "$(git symbolic-ref --short HEAD 2>/dev/null)" = "main" ] && \
+      ! git rev-parse --verify HEAD >/dev/null 2>&1 && \
+      [ -z "$(git branch -a)" ]
+      ```
+      即:是 git 仓库、当前(unborn)分支为 `main`、`HEAD` 无法解析(没有任何提交)、且不存在任何分支。
+    - 只要仓库里已经有任意一次提交,本例外**立即失效**,之后一律按上面的规则拒绝在 `main` 上提交。
 - **默认不 commit、不 push。** 任务完成后把改动留在工作区即可,不要主动提交。
 - **push 是非常严肃的操作。** 只有当我在对话中**明确说出"push"或"推送"**时才允许执行 `git push`;任何间接表述("差不多了"、"同步一下"等)都不算授权,需先确认。
 - 检查本地分支领先远程的提交数(如 `git status` 或 `git rev-list --count @{u}..HEAD`):
