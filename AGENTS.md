@@ -63,6 +63,11 @@
 - **第二段**(可选,与第一行空行分隔):概括本次提交的要点,**最多 2 行**;不要罗列实现细节(改了哪些文件、哪些函数),只讲做了什么、为什么。
 - **严禁添加任何 AI attribution 信息**:不得出现 `Co-Authored-By`、`Generated with`、`Assisted by`、AI 工具名称/链接等任何形式的署名或标记。
 
+### Tag 规则
+
+- **创建的 git tag 一律使用 annotated 形式**(`git tag -a <tag> -m "<说明>"`),不要用 lightweight tag(`git tag <tag>`)。annotated tag 会记录打 tag 的人、时间与说明,`git show <tag>` 能直接看到这些信息;lightweight tag 只是一个提交引用,信息不可追溯。
+- tag 的说明文字遵循与 commit message 相同的规范:简洁一句话说明这个版本,不添加任何 AI attribution 信息。
+
 其他红线:
 
 - 绝不读取、复制或传输密钥文件(`.env`、SSH 私钥、credentials 等);模板文件(`.env.example`)除外。
