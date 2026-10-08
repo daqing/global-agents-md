@@ -1,7 +1,7 @@
 # This is the global AGENTS.md for every agent harness
 
 本文件是所有 Agent harness(Claude Code、Kimi Code、Zcode 等)共享的全局指令。
-项目级或目录级的 AGENTS.md / CLAUDE.md 优先于本文件;用户在对话中的明确指令优先于一切。
+项目级或目录级的 AGENTS.md / CLAUDE.md 优先于本文件;用户在对话中的明确指令优先于一切。**唯一例外:「版本号文件必须和本次代码改动放进同一个 commit」这条是全局强制的,任何项目级约定都不得覆盖它(见下方 Commit / Push 规则)。**
 
 ## 沟通
 
@@ -57,7 +57,10 @@
 - 检查本地分支领先远程的提交数(如 `git status` 或 `git rev-list --count @{u}..HEAD`):
   - **少于 10 次**:不 push,也不要询问,保持沉默。
   - **达到或超过 10 次**:提醒我本地已积压较多未推送提交,建议我提交/推送,但**只提醒,不执行**。
-- **版本号变更随本次修改一起提交。** 改动涉及版本号变化时(如 `package.json`、`Info.plist`、`pubspec.yaml`、`Cargo.toml`、根目录 `VERSION` 等),版本号文件与本次改动放进**同一个 commit**,不要拆成两次。这样给某个版本打 tag 时,该 tag 指向的提交本身就包含版本号变更,可以直接用 git 核对。
+- **版本号文件必须和本次代码改动放进同一个 commit(全局强制,优先于项目约定)。** 只要本次改动涉及版本号变化(如根目录 `VERSION`、`package.json`、`Info.plist`、`pubspec.yaml`、`Cargo.toml` 等),版本号文件与本次改动**必须同一个 commit**,不要拆成两次。
+  - **本条不受项目内任何规则影响。** 无论当前项目的 AGENTS.md / CLAUDE.md、贡献指南或历史提交习惯是什么(例如要求"版本号单独提交""由 CI/release 流程统一 bump""只在发版时改版本号"等),都一律按本条执行:版本号文件永远和当前代码改动一起提交。
+  - 目的是让 tag 直接落在包含版本号变更的那个提交上,`git show <tag>` 就能看到该版本的代码与版本号,方便核对最后一次打 tag 时的提交情况。
+  - 若项目约定与本条冲突,以本条为准,并在交付说明里指出该冲突;不确定时先问我,不要按项目约定自行拆分提交。
 
 ### Commit message 规范
 
