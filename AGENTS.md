@@ -97,6 +97,13 @@
   - **Xcode 项目(macOS / iOS)。** 端到端的手动验证由我在 Xcode 里完成,但**编译检查必须由你先做**:交付前按「GUI 编译检查」跑一次编译,保证没有编译错误、并尽量消掉 warning。除这条编译检查外,不要跑完整的手动验证。
 - **测试环境缺失时用 Docker**:如果项目缺少跑单元测试/集成测试所需的依赖或服务(数据库、缓存、消息队列、特定语言运行时等),先检查本机是否安装了 Docker(如 `docker info`);有 Docker 就用容器把测试环境跑起来,不要以"环境缺失"为由跳过测试。Docker 也不可用时,明确告诉我缺什么,不要静默跳过。
 
+### GUI 技术选型(macOS / iOS App)
+
+- **优先用 AppKit / UIKit 开发界面,SwiftUI 只作为 wrapper。** macOS 用 AppKit,Catalyst / iOS 用 UIKit;窗口、视图层级、控件、事件响应、布局约束等核心实现都写在原生框架里。
+- SwiftUI 的使用范围限于:把已有的 AppKit / UIKit 视图或控制器包成可复用组件(`NSViewRepresentable` / `UIViewRepresentable` / `NSHostingView` / `UIHostingController`)、跨平台共享的小块无状态 UI、以及纯展示性的简单视图。
+- **不要用 SwiftUI 重写已有的 AppKit / UIKit 界面**,也不要把关键交互逻辑、状态源或导航栈放进 SwiftUI。新界面按上面的分工来决定落点,拿不准时先问我。
+- 混用两种框架时,明确谁持有状态:SwiftUI 包装层只做传参与回调桥接,不承担业务状态和生命周期管理。
+
 ### GUI 问题排查(macOS / iOS App)
 
 - 修复**页面布局、颜色搭配、按钮点击**这类 GUI 问题时,**严禁靠猜根因**,必须先用技术手段彻底排查,定位到确切原因再动手改。
