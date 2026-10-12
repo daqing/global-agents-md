@@ -150,6 +150,10 @@
   - 删除文件的暂存区:`/Users/daqing/protected/tmp/`(见「文件删除规则」,只进不出,由我手动清理)
   - (按需补充你自己的常用路径、别名、机器特有的注意事项)
 
+## Kimi Code 专用规则
+
+- **不要使用 subagent。** 在 Kimi harness 下推进开发时,一律不要派发 subagent:subagent 的进度不可控,会造成任务卡死的假象。请直接按任务顺序,自己逐个完成开发即可。**记住:不要使用 subagent。**
+
 ## 各 harness 接入方式
 
 - **Kimi Code / Zcode / 其他支持 AGENTS.md 的 harness**:将本文件所在目录(`~/.global`)设为全局配置目录,或按各 harness 文档指向本文件。
