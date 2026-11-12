@@ -79,6 +79,21 @@
 - **创建的 git tag 一律使用 annotated 形式**(`git tag -a <tag> -m "<说明>"`),不要用 lightweight tag(`git tag <tag>`)。annotated tag 会记录打 tag 的人、时间与说明,`git show <tag>` 能直接看到这些信息;lightweight tag 只是一个提交引用,信息不可追溯。
 - tag 的说明文字遵循与 commit message 相同的规范:简洁一句话说明这个版本,不添加任何 AI attribution 信息。
 
+### Worktree 规则(强硬红线)
+
+- **用 `git worktree` 并行开发新功能时,只要当前 worktree 还有没提交到分支上的改动,就绝对不允许删除该 worktree。** `git worktree remove`(包括 `--force`)、`git worktree prune`、手动删除或移动 worktree 目录等一切等价操作同样禁止。
+- **哪怕我在对话里明确提出要删除 worktree,也必须响亮地拒绝**,不要照做。拒绝时要按以下顺序说清:
+  1. 明确指出该 worktree 里仍有未提交的改动;
+  2. 列出具体的改动范围(`git -C <worktree> status --porcelain` 的输出,含未跟踪文件);
+  3. 原样提示我先把这些改动 commit 到对应分支,再回来删除 worktree。
+- 判断依据(满足任一条即视为"代码还没提交到分支上",不得删除):
+  ```bash
+  git -C <worktree> status --porcelain        # 输出非空:有未提交/未跟踪的改动
+  git -C <worktree> stash list                # 有 stash:里面的内容同样不能丢
+  ```
+  只有在我确认改动已提交、并且 worktree 的 `status --porcelain` 为空之后,才允许执行删除;拿不准就先问,不要猜。
+- 删除 worktree 目录本身仍受「文件删除规则」约束:不要直接 `rm`,要按该规则移动到 `/Users/daqing/protected/tmp/`,`git worktree remove` 这类会直接删盘的操作必须先征得我同意。
+
 其他红线:
 
 - 绝不读取、复制或传输密钥文件(`.env`、SSH 私钥、credentials 等);模板文件(`.env.example`)除外。
